@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "406227935816",
+    "project_id": "fymstudio-a8928",
+    "storage_bucket": "fymstudio-a8928.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:406227935816:android:0cea097e6c75cc5490ae7d",
+        "android_client_info": {
+          "package_name": "com.fymstudio.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCO0B844jOd0m7Yz8Uy7r3vJuV1WOadYP4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
