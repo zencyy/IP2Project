@@ -1,0 +1,84 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Shader Graphs_Ocean
+  m_Shader: {fileID: -6465566751694194690, guid: 50623ac52f1a1974198bf5d2d33746ea, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 2
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses:
+  - MOTIONVECTORS
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _foam:
+        m_Texture: {fileID: 2800000, guid: 24e20983fe12e0c4e8b57d0a706910ca, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _main_normal:
+        m_Texture: {fileID: 2800000, guid: b04329a35e700ab4fbb7e521d2bd4600, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _second_normal:
+        m_Texture: {fileID: 2800000, guid: cb3ea301d0223114c849f18b01ac86c8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _clamp_max: 0.79
+    - _depth: -0.62
+    - _displacement: 4.52
+    - _foam_depth: 0.32
+    - _foam_strength: 1.26
+    - _foam_tile: 0.32
+    - _metallic: 0.71
+    - _normal_strength: 0.541
+    - _smoothness: 1
+    - _strength: 0.37
+    - _wave_displacement: -0.02
+    - _wave_speed: 6.59
+    m_Colors:
+    - _deep_water_colour: {r: 0.373042, g: 0.49582073, b: 0.9528302, a: 0.7921569}
+    - _shallow_water_colour: {r: 0.10625131, g: 0.039215684, b: 0.94509804, a: 0.1882353}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
+--- !u!114 &8765390600640488499
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 10
