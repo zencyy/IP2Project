@@ -5,7 +5,6 @@ using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Extensions;
-using System.Collections.Generic; 
 
 public class AuthManager : MonoBehaviour
 {
@@ -163,8 +162,6 @@ public class UserProgress
     public int total_score = 0;
     public int sentences_completed = 0;
     public int vocabulary_collected = 0;
-
-    public List<string> inventory = new List<string>();
     // Arrays are harder to initialize in simple JSON utility, initializing empty for now
 }
 
