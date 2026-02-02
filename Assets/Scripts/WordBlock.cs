@@ -1,26 +1,40 @@
 using UnityEngine;
-using TMPro; // Needed for text updates
+using TMPro; // Required for TextMeshPro
 
 public class WordBlock : MonoBehaviour
 {
     public enum WordType { Subject, Verb, Object, Modifier }
 
     [Header("Grammar Settings")]
-    public WordType myType;      // e.g., Subject
-    public string wordText;      // e.g., "The Cat"
+    public WordType myType;      
+    public string wordText;      // e.g. "They"
 
     [Header("Inventory Settings")]
-    // CRITICAL: This must match your Prefab Name exactly! (e.g. "Block_Cat")
-    public string wordID;        
-    public bool destroyOnCollect = true; // Should it disappear when dropped in bag?
+    public string wordID;        // e.g. "Sub_They"
+    public bool destroyOnCollect = true;
 
-    // Auto-update text in Editor
+    // --- ADD THIS START FUNCTION ---
+    void Start()
+    {
+        UpdateTextDisplay();
+    }
+
+    // This ensures text updates when you type in the Inspector (Editor only)
     void OnValidate()
     {
-        var textMesh = GetComponentInChildren<TMP_Text>();
-        if (textMesh != null) textMesh.text = wordText;
-        
-        // Auto-set ID to the GameObject name if empty (optional helper)
+        UpdateTextDisplay();
         if (string.IsNullOrEmpty(wordID)) wordID = gameObject.name;
+    }
+
+    // Shared function to update the visual text
+    public void UpdateTextDisplay()
+    {
+        // Find the TextMeshPro component on this object or its children
+        TMP_Text textMesh = GetComponentInChildren<TMP_Text>();
+        
+        if (textMesh != null)
+        {
+            textMesh.text = wordText;
+        }
     }
 }

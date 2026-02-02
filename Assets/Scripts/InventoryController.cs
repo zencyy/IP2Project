@@ -65,20 +65,22 @@ public class InventoryController : MonoBehaviour
         }
     }
 
-    void ToggleInventory()
+   void ToggleInventory()
     {
-        bool isActive = !inventoryCanvas.activeSelf; // Flip the state
+        bool isActive = !inventoryCanvas.activeSelf; 
         inventoryCanvas.SetActive(isActive);
 
         if (isActive)
         {
-            // A. Position the menu in front of the player
             PositionMenu();
 
-            // B. Refresh the data from Firebase/Inventory Manager
+            // REMOVED: InventoryManager.Instance.LoadUserData(); 
+            // We trust the local list now. It is faster and prevents "ghost" items.
+            
+            // OPTIONAL: Just force the UI to redraw what we already know we have
             if (InventoryManager.Instance != null)
             {
-                InventoryManager.Instance.LoadInventory();
+                 InventoryManager.Instance.RefreshUI();
             }
         }
     }

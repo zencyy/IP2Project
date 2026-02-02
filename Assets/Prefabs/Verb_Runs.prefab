@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 2620539707266841780}
   - component: {fileID: 5594814638242838670}
   m_Layer: 0
-  m_Name: Verb
+  m_Name: Verb_Runs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -283,7 +283,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WordBlock
   myType: 1
   wordText: runs
-  wordID: Verb
+  wordID: Verb_Runs
   destroyOnCollect: 1
 --- !u!1 &701244390751750161
 GameObject:
