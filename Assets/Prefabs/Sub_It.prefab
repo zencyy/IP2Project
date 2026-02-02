@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: My cat
+  m_text: It
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -254,7 +254,7 @@ GameObject:
   - component: {fileID: 8682881066856080911}
   - component: {fileID: 7912612202327098529}
   m_Layer: 0
-  m_Name: Subject
+  m_Name: Sub_It
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -520,6 +520,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WordBlock
   myType: 0
-  wordText: My cat
-  wordID: Subject
+  wordText: It
+  wordID: Sub_it
   destroyOnCollect: 1
