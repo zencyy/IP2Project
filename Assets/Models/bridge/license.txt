@@ -1,0 +1,11 @@
+Model Information:
+* title:	Bridge
+* source:	https://sketchfab.com/3d-models/bridge-75467253334941bfaec73b3cc6d1fd1b
+* author:	Third_Fox (https://sketchfab.com/Third_Fox)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Bridge" (https://sketchfab.com/3d-models/bridge-75467253334941bfaec73b3cc6d1fd1b) by Third_Fox (https://sketchfab.com/Third_Fox) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
