@@ -253,6 +253,7 @@ GameObject:
   - component: {fileID: 1015419695093845016}
   - component: {fileID: 3695947144358230159}
   - component: {fileID: 4450504822992069858}
+  - component: {fileID: -7132964299165349668}
   m_Layer: 0
   m_Name: Verb_Fly
   m_TagString: Untagged
@@ -523,3 +524,17 @@ MonoBehaviour:
   wordText: fly
   wordID: Verb_Fly
   destroyOnCollect: 1
+--- !u!114 &-7132964299165349668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7876898733379023870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e747c5618079f6b4488959ed3540e5c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WordAudioEmitter
+  minDistance: 1
+  maxDistance: 15

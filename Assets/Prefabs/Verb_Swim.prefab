@@ -151,6 +151,7 @@ GameObject:
   - component: {fileID: 1884555061934739632}
   - component: {fileID: 7429155254494877055}
   - component: {fileID: 1559699589177325015}
+  - component: {fileID: 2473712836809420454}
   m_Layer: 0
   m_Name: Verb_Swim
   m_TagString: Untagged
@@ -421,6 +422,20 @@ MonoBehaviour:
   wordText: swim
   wordID: Verb_Swim
   destroyOnCollect: 1
+--- !u!114 &2473712836809420454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5044339711973802098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e747c5618079f6b4488959ed3540e5c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WordAudioEmitter
+  minDistance: 1
+  maxDistance: 15
 --- !u!1 &7729865496762847372
 GameObject:
   m_ObjectHideFlags: 0

@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 7032210001089459069}
   - component: {fileID: 3807419854156527883}
   - component: {fileID: 1685621156663977736}
+  - component: {fileID: -2867044547218465176}
   m_Layer: 0
   m_Name: Verb_Barks
   m_TagString: Untagged
@@ -285,6 +286,20 @@ MonoBehaviour:
   wordText: barks
   wordID: Verb_Barks
   destroyOnCollect: 1
+--- !u!114 &-2867044547218465176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2989656972176252638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e747c5618079f6b4488959ed3540e5c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WordAudioEmitter
+  minDistance: 1
+  maxDistance: 15
 --- !u!1 &6764581914562410879
 GameObject:
   m_ObjectHideFlags: 0

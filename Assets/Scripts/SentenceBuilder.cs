@@ -14,6 +14,7 @@ public class SentenceBuilder : MonoBehaviour
         public string subjectID; // e.g. "Sub_Cat"
         public string verbID;    // e.g. "Verb_Meows"
     }
+    private bool isVoiceVerified = false;
 
     [Header("Answer Key")]
     [Tooltip("List all correct sentences here.")]
@@ -67,7 +68,14 @@ public class SentenceBuilder : MonoBehaviour
                 return;
             }
         }
-
+        if (!isVoiceVerified)
+    {
+        Debug.Log("You must speak the sentence to verify pronunciation first!");
+        // Optional: Play a "Locked" sound or "Please Speak" prompt
+        if (VoiceManager.Instance && VoiceManager.Instance.listenStartClip) 
+            VoiceManager.Instance.audioSource.PlayOneShot(VoiceManager.Instance.listenStartClip);
+        return;
+    }
         // Standard Checks
         if (!subjectSocket.hasSelection || !verbSocket.hasSelection)
         {
@@ -191,5 +199,34 @@ public class SentenceBuilder : MonoBehaviour
     void PlaySound(AudioClip clip)
     {
         if (audioSource && clip) audioSource.PlayOneShot(clip);
+    }
+
+    public string GetCurrentSentenceString()
+    {
+        if (!subjectSocket.hasSelection || !verbSocket.hasSelection) return "";
+        string s = GetBlockID(subjectSocket);
+        string v = GetBlockID(verbSocket);
+        return $"{s} {v}"; // Returns "Sub_Cat Verb_Eats"
+    }
+
+    // Used by MicButton to unlock the station
+    public void SetVoiceVerified(bool state)
+    {
+        isVoiceVerified = state;
+        Debug.Log($"SV Station Verified: {state}");
+    }
+
+    public bool IsCurrentSentenceValid()
+    {
+        if (!subjectSocket.hasSelection || !verbSocket.hasSelection) return false;
+
+        string s = GetBlockID(subjectSocket);
+        string v = GetBlockID(verbSocket);
+
+        foreach (ValidPair pair in correctSentences)
+        {
+            if (pair.subjectID == s && pair.verbID == v) return true;
+        }
+        return false;
     }
 }

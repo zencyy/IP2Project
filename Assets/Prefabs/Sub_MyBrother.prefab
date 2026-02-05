@@ -253,6 +253,7 @@ GameObject:
   - component: {fileID: 3327985487950830020}
   - component: {fileID: 8682881066856080911}
   - component: {fileID: 7912612202327098529}
+  - component: {fileID: 4442783803559714127}
   m_Layer: 0
   m_Name: Sub_MyBrother
   m_TagString: Untagged
@@ -523,3 +524,17 @@ MonoBehaviour:
   wordText: My Brother
   wordID: Sub_MyBrother
   destroyOnCollect: 1
+--- !u!114 &4442783803559714127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8218745037583693868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e747c5618079f6b4488959ed3540e5c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WordAudioEmitter
+  minDistance: 1
+  maxDistance: 15

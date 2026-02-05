@@ -17,7 +17,7 @@ public class SentenceBuilderSVO : MonoBehaviour
 
     [Header("Answer Key")]
     public List<ValidSVO> correctSentences; 
-
+    private bool isVoiceVerified = false;
     [Header("Sockets")]
     public XRSocketInteractor subjectSocket;
     public XRSocketInteractor verbSocket;
@@ -165,4 +165,30 @@ public class SentenceBuilderSVO : MonoBehaviour
         return socket.firstInteractableSelected.transform.gameObject;
     }
     void PlaySound(AudioClip clip) { if (audioSource && clip) audioSource.PlayOneShot(clip); }
+
+    public string GetCurrentSentenceString()
+    {
+    if (!subjectSocket.hasSelection || !verbSocket.hasSelection || !objectSocket.hasSelection) return "";
+    return $"{GetID(subjectSocket)} {GetID(verbSocket)} {GetID(objectSocket)}";
+    }
+
+    public void SetVoiceVerified(bool state)
+    {
+        isVoiceVerified = state;
+    }
+
+    public bool IsCurrentSentenceValid()
+    {
+        if (!subjectSocket.hasSelection || !verbSocket.hasSelection || !objectSocket.hasSelection) return false;
+
+        string s = GetID(subjectSocket);
+        string v = GetID(verbSocket);
+        string o = GetID(objectSocket);
+
+        foreach (ValidSVO key in correctSentences)
+        {
+            if (key.subjectID == s && key.verbID == v && key.objectID == o) return true;
+        }
+        return false;
+    }
 }
