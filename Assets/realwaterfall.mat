@@ -43,14 +43,14 @@ Material:
     - _VoronoiScale: 5.08
     - _bottomstrength: 1.53
     - _rippleamount: 10.79
-    - _vertex_offset_amount: 3.55
+    - _vertex_offset_amount: 2.77
     - _vornoispeed: 6.22
     m_Colors:
     - _bottom_in: {r: 9.42, g: 0.5, b: 0, a: 0}
     - _bottom_out: {r: 0.93, g: 2.38, b: 0, a: 0}
     - _remap_in: {r: 0.16, g: -0.08, b: 0, a: 0}
     - _remap_out: {r: 1.39, g: 0.56, b: 0, a: 0}
-    - _ripplecolour: {r: 0.254902, g: 0.40782288, b: 0.88235295, a: 1}
+    - _ripplecolour: {r: 0.3048238, g: 0.3880407, b: 0.6462264, a: 1}
     - _ripplespeed: {r: 0.29, g: 0.56, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
