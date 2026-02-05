@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 4478037650162791287}
   - component: {fileID: 210459907072638958}
   - component: {fileID: 3983712551145385056}
+  - component: {fileID: -747552721176240001}
   m_Layer: 0
   m_Name: Verb_Dances
   m_TagString: Untagged
@@ -285,6 +286,20 @@ MonoBehaviour:
   wordText: dances
   wordID: Verb_Dances
   destroyOnCollect: 1
+--- !u!114 &-747552721176240001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2967855523261898636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e747c5618079f6b4488959ed3540e5c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WordAudioEmitter
+  minDistance: 1
+  maxDistance: 15
 --- !u!1 &3845097640835430244
 GameObject:
   m_ObjectHideFlags: 0

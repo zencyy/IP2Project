@@ -253,6 +253,7 @@ GameObject:
   - component: {fileID: 2253088784353806112}
   - component: {fileID: 2868970002340431839}
   - component: {fileID: 9195723600344348528}
+  - component: {fileID: 3503192454488159230}
   m_Layer: 0
   m_Name: Object_Bottle
   m_TagString: Untagged
@@ -523,3 +524,17 @@ MonoBehaviour:
   wordText: bottle
   wordID: Object_Bottle
   destroyOnCollect: 1
+--- !u!114 &3503192454488159230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6079270276760573580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e747c5618079f6b4488959ed3540e5c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WordAudioEmitter
+  minDistance: 1
+  maxDistance: 15

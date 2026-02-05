@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 3472071038999965989}
   - component: {fileID: 8630059851048891361}
   - component: {fileID: 3383830210300367303}
+  - component: {fileID: 8605758671730016160}
   m_Layer: 0
   m_Name: Object_Movie
   m_TagString: Untagged
@@ -285,6 +286,20 @@ MonoBehaviour:
   wordText: movie
   wordID: Object_Movie
   destroyOnCollect: 1
+--- !u!114 &8605758671730016160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1422791202471333430}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e747c5618079f6b4488959ed3540e5c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WordAudioEmitter
+  minDistance: 1
+  maxDistance: 15
 --- !u!1 &1433052562312229048
 GameObject:
   m_ObjectHideFlags: 0

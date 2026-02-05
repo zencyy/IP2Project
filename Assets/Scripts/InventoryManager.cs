@@ -22,6 +22,11 @@ public class InventoryManager : MonoBehaviour
     public List<string> consumedItemIDs = new List<string>(); 
     public List<string> placedItemIDs = new List<string>();
 
+    [Header("Audio Settings")]
+    public AudioClip audioSubjectLoop;
+    public AudioClip audioVerbLoop;
+    public AudioClip audioObjectLoop;
+
     public bool verbsUnlocked = false;
     public bool objectsUnlocked = false; 
     
@@ -368,4 +373,12 @@ public class InventoryManager : MonoBehaviour
         dbReference.Child("users").Child(userId).Child("placed_items").Child(wordID).SetValueAsync(locData);
         if(!placedItemIDs.Contains(wordID)) placedItemIDs.Add(wordID);
     }
+
+    public bool IsItemKnown(string wordID)
+{
+    // Returns TRUE if the player has found this item (in pocket, on table, or used)
+    return localInventory.Contains(wordID) 
+        || placedItemIDs.Contains(wordID) 
+        || consumedItemIDs.Contains(wordID);
+}
 }
