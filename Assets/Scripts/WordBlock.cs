@@ -13,6 +13,9 @@ public class WordBlock : MonoBehaviour
     public string wordID;        // e.g. "Sub_They"
     public bool destroyOnCollect = true;
 
+    [Header("Settings")]
+    public bool isCollectable = true;
+
     // --- ADD THIS START FUNCTION ---
     void Start()
     {
