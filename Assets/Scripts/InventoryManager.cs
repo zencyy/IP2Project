@@ -194,12 +194,12 @@ public class InventoryManager : MonoBehaviour
 
         foreach (string id in localInventory)
         {
-            if (id.StartsWith("Sub_")) subjectCount++;
-            if (id.StartsWith("Verb_")) verbCount++;
+            if (id.StartsWith("sub_")) subjectCount++;
+            if (id.StartsWith("verb_")) verbCount++;
             
             // --- THE FIX ---
             // Check for both "Obj_" AND "Object_" to be safe
-            if (id.StartsWith("Obj_") || id.StartsWith("Object_")) objectCount++;
+            if (id.StartsWith("obj_") || id.StartsWith("Object_")) objectCount++;
             // ----------------
         }
 
