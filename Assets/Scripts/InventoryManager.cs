@@ -186,44 +186,43 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    // UPDATED: Progress Tracker
     public void UpdateProgressTracker()
     {
-        // 1. Calculate Counts (Only needed for Phase 1/2 tracking)
         int subjectCount = 0;
         int verbCount = 0;
         int objectCount = 0;
-        foreach (string id in localInventory) {
+
+        foreach (string id in localInventory)
+        {
             if (id.StartsWith("Sub_")) subjectCount++;
             if (id.StartsWith("Verb_")) verbCount++;
-            if (id.StartsWith("Obj_")) objectCount++;
+            
+            // --- THE FIX ---
+            // Check for both "Obj_" AND "Object_" to be safe
+            if (id.StartsWith("Obj_") || id.StartsWith("Object_")) objectCount++;
+            // ----------------
         }
 
         if (ProgressHUD.Instance != null)
         {
-            // PHASE 1: Subject Collection
             if (!verbsUnlocked)
             {
                 ProgressHUD.Instance.UpdateProgress("Collect Subjects", subjectCount, 10);
             }
-            // PHASE 2: Verb Collection
             else if (!AreShelfBlocksCollected(subjectContainer) || !AreShelfBlocksCollected(verbContainer.transform))
             {
-                 // Note: If you have consumed blocks, 'subjectCount' is 0, but this doesn't matter
-                 // because we are in the 'else' block of !verbsUnlocked.
                  ProgressHUD.Instance.UpdateProgress("Collect Verbs", verbCount, 10);
             }
-            // PHASE 3: SV Sentences
             else if (!objectsUnlocked)
             {
                  ProgressHUD.Instance.UpdateProgress("Form Sentences (SV)", currentSVSentenceCount, 5);
             }
-            // PHASE 4: Object Collection
+            // Check Phase 4
             else if (!AreShelfBlocksCollected(objectContainer.transform))
             {
+                 // Now objectCount will correctly show 1, 2, 3...
                  ProgressHUD.Instance.UpdateProgress("Collect Objects", objectCount, 5);
             }
-            // PHASE 5: SVO Sentences
             else
             {
                  ProgressHUD.Instance.UpdateProgress("Form Sentences (SVO)", currentSVOSentenceCount, 5);

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
-using UnityEngine.XR.Interaction.Toolkit.Interactors; // Needed for XRRayInteractor in newer versions
+using UnityEngine.XR.Interaction.Toolkit.Interactors; 
 using System.Collections.Generic;
 
 public class RaycastCollector : MonoBehaviour
@@ -68,12 +68,25 @@ public class RaycastCollector : MonoBehaviour
 
             if (block != null)
             {
-                // Send to Inventory Manager
-                InventoryManager.Instance.CollectWord(block.wordID);
-                Debug.Log($"Collected: {block.wordID}");
+                // --- THE FIX: CHECK IF COLLECTABLE ---
+                // If this is an animal (isCollectable = false), do NOTHING.
+                if (!block.isCollectable) 
+                {
+                    Debug.Log($"Hit {block.name}, but it is not collectable (likely an Animal).");
+                    return; 
+                }
+                // -------------------------------------
 
-                // Destroy the object
-                Destroy(block.gameObject);
+                // Send to Inventory Manager
+                if (InventoryManager.Instance != null)
+                {
+                    InventoryManager.Instance.CollectWord(block.wordID);
+                    Debug.Log($"Collected: {block.wordID}");
+                    
+                    // Only destroy it if the Inventory Manager doesn't handle hiding it
+                    // (Usually InventoryManager.CollectWord hides the object, but if not:)
+                    // Destroy(block.gameObject); 
+                }
             }
         }
     }
