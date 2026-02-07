@@ -15,6 +15,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Hand Gesture.unity
     guid: 48a28afc0c12e414fa5485310ff475c9
   m_configObjects:
+    Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 5da89c9f567724a43b36912c22bb3fed, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: f8512b0acae259348a20b891414de48d, type: 2}
     com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 28b40549131dc4f4ea118cd6d3380408, type: 2}

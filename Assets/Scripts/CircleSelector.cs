@@ -21,6 +21,7 @@ public class CircleSelector : MonoBehaviour
     public GameObject spellingCanvas;      
     public TextMeshProUGUI spellingText;   
     public LineRenderer lineRenderer;
+    
 
     private List<Vector3> strokePoints = new List<Vector3>();
     private bool isDrawing = false;

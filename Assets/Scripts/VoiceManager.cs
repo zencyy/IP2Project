@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.Windows.Speech; // Standard Unity Windows Speech API
+using UnityEngine.Windows.Speech; 
 using System.Collections.Generic;
 using System.Linq;
 using System;
@@ -16,7 +16,6 @@ public class VoiceManager : MonoBehaviour
 
     private KeywordRecognizer keywordRecognizer;
     private Action<bool> currentCallback;
-    private string currentTargetPhrase;
     private bool isListening = false;
 
     void Awake()
@@ -24,39 +23,49 @@ public class VoiceManager : MonoBehaviour
         Instance = this;
     }
 
-    // Call this from the Mic Button
     public void ListenForPhrase(string phrase, Action<bool> onResult)
     {
+        // Prevent double-clicks
         if (isListening) return;
 
-        currentTargetPhrase = phrase.ToLower();
         currentCallback = onResult;
 
-        // Clean up text (Remove "Sub_", "Verb_", underscores)
+        // Clean up text
         string cleanPhrase = CleanText(phrase);
         Debug.Log($"[Voice] Listening for: '{cleanPhrase}'");
 
-        // Play "Bloop" sound
         if(audioSource && listenStartClip) audioSource.PlayOneShot(listenStartClip);
 
-        // --- WINDOWS SPEECH RECOGNITION SETUP ---
-        // We tell the recognizer to ONLY listen for the correct answer (and maybe a few decoys if you wanted)
-        // This makes it accurate for verifying pronunciation of specific words.
-        if (keywordRecognizer != null && keywordRecognizer.IsRunning)
+        // --- THE FIX: ROBUST CLEANUP ---
+        // We must Dispose() the old one even if it is NOT running.
+        if (keywordRecognizer != null)
         {
-            keywordRecognizer.Stop();
+            if (keywordRecognizer.IsRunning)
+            {
+                keywordRecognizer.Stop();
+            }
             keywordRecognizer.Dispose();
+            keywordRecognizer = null;
         }
+        // -------------------------------
 
-        keywordRecognizer = new KeywordRecognizer(new string[] { cleanPhrase });
-        keywordRecognizer.OnPhraseRecognized += OnPhraseRecognized;
-        keywordRecognizer.Start();
-        
-        isListening = true;
-        
-        // Timeout after 5 seconds if nothing heard
-        CancelInvoke(nameof(StopListeningTimeout));
-        Invoke(nameof(StopListeningTimeout), 5.0f);
+        try 
+        {
+            keywordRecognizer = new KeywordRecognizer(new string[] { cleanPhrase });
+            keywordRecognizer.OnPhraseRecognized += OnPhraseRecognized;
+            keywordRecognizer.Start();
+            
+            isListening = true;
+            
+            CancelInvoke(nameof(StopListeningTimeout));
+            Invoke(nameof(StopListeningTimeout), 5.0f);
+        }
+        catch (UnityException e)
+        {
+            Debug.LogError($"[Voice Error] Failed to start recognition: {e.Message}");
+            // Fail gracefully so the game doesn't break
+            CompleteListening(false);
+        }
     }
 
     void OnPhraseRecognized(PhraseRecognizedEventArgs args)
@@ -65,7 +74,6 @@ public class VoiceManager : MonoBehaviour
 
         Debug.Log($"[Voice] Heard: {args.text} (Confidence: {args.confidence})");
 
-        // Basic confidence check
         if (args.confidence == ConfidenceLevel.Medium || args.confidence == ConfidenceLevel.High)
         {
             CompleteListening(true);
@@ -84,6 +92,8 @@ public class VoiceManager : MonoBehaviour
     void CompleteListening(bool success)
     {
         isListening = false;
+        
+        // Stop logic
         if (keywordRecognizer != null && keywordRecognizer.IsRunning)
         {
             keywordRecognizer.Stop();
@@ -98,17 +108,18 @@ public class VoiceManager : MonoBehaviour
             if(audioSource && listenFailClip) audioSource.PlayOneShot(listenFailClip);
         }
 
-        // Return result to the button
         currentCallback?.Invoke(success);
     }
 
-    // Helper to turn "Sub_Cat" + "Verb_Eats" into "Cat Eats"
     private string CleanText(string raw)
     {
-        // Remove prefixes like "Sub_", "Verb_", "Obj_"
+        // Remove standard prefixes
         string s = raw.Replace("Sub_", "").Replace("Verb_", "").Replace("Obj_", "");
-        // Replace underscores with spaces
+        
+        // Also remove "Object" if your block is named "Object_Wallet" by mistake
+        s = s.Replace("Object_", ""); 
+        
         s = s.Replace("_", " ");
-        return s.ToLower();
+        return s.ToLower().Trim();
     }
 }
