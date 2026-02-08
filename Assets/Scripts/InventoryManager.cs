@@ -298,7 +298,7 @@ public class InventoryManager : MonoBehaviour
     void CheckProgression()
     {
         int subCount = 0;
-        foreach(string s in localInventory) if(s.StartsWith("Sub_")) subCount++;
+        foreach(string s in localInventory) if(s.StartsWith("sub_")) subCount++;
         if (subCount >= 10 && !verbsUnlocked)
         {
             verbsUnlocked = true;

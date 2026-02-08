@@ -14,6 +14,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Hand Gesture.unity
     guid: 48a28afc0c12e414fa5485310ff475c9
+  - enabled: 1
+    path: Assets/Scenes/Terrain.unity
+    guid: 22c45f29fb35a8a42b1fae31a119c213
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 5da89c9f567724a43b36912c22bb3fed, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

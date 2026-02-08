@@ -51,15 +51,15 @@ public class WordAudioEmitter : MonoBehaviour
         string id = wordBlock.wordID;
 
         // Determine type based on ID prefix
-        if (id.StartsWith("Sub_"))
+        if (id.StartsWith("sub_"))
         {
             audioSource.clip = InventoryManager.Instance.audioSubjectLoop;
         }
-        else if (id.StartsWith("Verb_"))
+        else if (id.StartsWith("verb_"))
         {
             audioSource.clip = InventoryManager.Instance.audioVerbLoop;
         }
-        else if (id.StartsWith("Obj_"))
+        else if (id.StartsWith("obj_"))
         {
             audioSource.clip = InventoryManager.Instance.audioObjectLoop;
         }
