@@ -1,5 +1,5 @@
 using UnityEngine;
-using TMPro; // Required for TextMeshPro
+using TMPro; 
 
 public class WordBlock : MonoBehaviour
 {
@@ -7,37 +7,49 @@ public class WordBlock : MonoBehaviour
 
     [Header("Grammar Settings")]
     public WordType myType;      
-    public string wordText;      // e.g. "They"
+    public string wordText;      
 
     [Header("Inventory Settings")]
-    public string wordID;        // e.g. "Sub_They"
+    public string wordID;        
     public bool destroyOnCollect = true;
 
     [Header("Settings")]
     public bool isCollectable = true;
 
-    // --- ADD THIS START FUNCTION ---
     void Start()
     {
         UpdateTextDisplay();
+        // Auto-fix ID if empty
+        if (string.IsNullOrEmpty(wordID)) wordID = gameObject.name;
     }
 
-    // This ensures text updates when you type in the Inspector (Editor only)
     void OnValidate()
     {
         UpdateTextDisplay();
         if (string.IsNullOrEmpty(wordID)) wordID = gameObject.name;
     }
 
-    // Shared function to update the visual text
     public void UpdateTextDisplay()
     {
-        // Find the TextMeshPro component on this object or its children
         TMP_Text textMesh = GetComponentInChildren<TMP_Text>();
-        
-        if (textMesh != null)
+        if (textMesh != null) textMesh.text = wordText;
+    }
+
+    // --- THE FIX IS HERE ---
+    // This function must be called by the XR Grab Interactable
+    public void Collect()
+    {
+        if (!isCollectable) return;
+
+        if (InventoryManager.Instance != null)
         {
-            textMesh.text = wordText;
+            // We pass 'gameObject' so the manager destroys THIS specific clone
+            InventoryManager.Instance.CollectWord(wordID, gameObject);
+        }
+        else
+        {
+            // Fallback: If manager is missing, just destroy self
+            Destroy(gameObject); 
         }
     }
 }

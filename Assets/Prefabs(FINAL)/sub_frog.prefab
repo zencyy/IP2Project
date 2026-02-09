@@ -151,11 +151,8 @@ GameObject:
   - component: {fileID: 7579145104655577913}
   - component: {fileID: 2771373527341621744}
   - component: {fileID: 3526045841013055005}
-  - component: {fileID: 4468526067061916441}
-  - component: {fileID: 2930497669055117412}
   - component: {fileID: 2784326195044643434}
   - component: {fileID: 6046634275528627991}
-  - component: {fileID: 8521016656889739008}
   m_Layer: 0
   m_Name: sub_frog
   m_TagString: Untagged
@@ -299,37 +296,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27b6887a593240c48b8d82eeb927590c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ObjectStateTracker
---- !u!114 &4468526067061916441
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6011392296304510299}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e7517354744acf644bdb8a473ab239c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WordBlock
-  myType: 0
-  wordText: The Frog
-  wordID: sub_frog
-  destroyOnCollect: 1
-  isCollectable: 1
---- !u!114 &2930497669055117412
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6011392296304510299}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e747c5618079f6b4488959ed3540e5c0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WordAudioEmitter
-  minDistance: 1
-  maxDistance: 15
 --- !u!54 &2784326195044643434
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -484,27 +450,6 @@ MonoBehaviour:
   m_LimitAngularVelocity: 0
   m_MaxLinearVelocityDelta: 10
   m_MaxAngularVelocityDelta: 20
---- !u!65 &8521016656889739008
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6011392296304510299}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.01, y: 0.01, z: 0.010000002}
-  m_Center: {x: -0.000000029802322, y: 0, z: -0.000000013737008}
 --- !u!1 &6035505681909294192
 GameObject:
   m_ObjectHideFlags: 0
