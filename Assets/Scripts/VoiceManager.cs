@@ -114,7 +114,7 @@ public class VoiceManager : MonoBehaviour
     private string CleanText(string raw)
     {
         // Remove standard prefixes
-        string s = raw.Replace("Sub_", "").Replace("Verb_", "").Replace("Obj_", "");
+        string s = raw.Replace("sub_", "").Replace("verb_", "").Replace("obj_", "");
         
         // Also remove "Object" if your block is named "Object_Wallet" by mistake
         s = s.Replace("Object_", ""); 

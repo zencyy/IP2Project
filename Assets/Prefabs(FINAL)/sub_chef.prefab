@@ -14,8 +14,6 @@ GameObject:
   - component: {fileID: 8577622658852267794}
   - component: {fileID: 3938734109773437393}
   - component: {fileID: 5494402556533974830}
-  - component: {fileID: 4930543136981240721}
-  - component: {fileID: 7592450157007735522}
   - component: {fileID: 6194174593427616917}
   - component: {fileID: 8733537583728807670}
   - component: {fileID: 1925508959408976876}
@@ -151,37 +149,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.01, y: 0.01, z: 0.010000002}
   m_Center: {x: 0, y: 0, z: 0.0000000011641532}
---- !u!114 &4930543136981240721
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1981335284445268145}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e7517354744acf644bdb8a473ab239c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WordBlock
-  myType: 0
-  wordText: The Chef
-  wordID: sub_chef
-  destroyOnCollect: 1
-  isCollectable: 1
---- !u!114 &7592450157007735522
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1981335284445268145}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e747c5618079f6b4488959ed3540e5c0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WordAudioEmitter
-  minDistance: 1
-  maxDistance: 15
 --- !u!114 &6194174593427616917
 MonoBehaviour:
   m_ObjectHideFlags: 0

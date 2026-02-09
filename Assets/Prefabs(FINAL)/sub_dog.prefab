@@ -249,15 +249,12 @@ GameObject:
   - component: {fileID: 3319733771177608369}
   - component: {fileID: 5122764310085956402}
   - component: {fileID: 2600353810030183804}
-  - component: {fileID: 3131164925373216471}
   - component: {fileID: 6956010138371787285}
   - component: {fileID: 5610227747399983563}
-  - component: {fileID: 6723745404546337100}
   - component: {fileID: 6894756087234196646}
   - component: {fileID: 87366641991951932}
   - component: {fileID: 6516523571497874182}
   - component: {fileID: 4253813471127487051}
-  - component: {fileID: 6314470090072819686}
   m_Layer: 0
   m_Name: sub_dog
   m_TagString: Untagged
@@ -337,27 +334,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &3131164925373216471
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8678875584510213904}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.01, y: 0.01, z: 0.010000002}
-  m_Center: {x: 0, y: 0, z: 0.0000000011641532}
 --- !u!114 &6956010138371787285
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -396,23 +372,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.01, y: 0.01, z: 0.010000002}
   m_Center: {x: 0, y: 0, z: 0.0000000011641532}
---- !u!114 &6723745404546337100
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8678875584510213904}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e7517354744acf644bdb8a473ab239c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WordBlock
-  myType: 0
-  wordText: The Dog
-  wordID: sub_dog
-  destroyOnCollect: 1
-  isCollectable: 1
 --- !u!114 &6894756087234196646
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -593,24 +552,3 @@ MonoBehaviour:
   m_LimitAngularVelocity: 0
   m_MaxLinearVelocityDelta: 10
   m_MaxAngularVelocityDelta: 20
---- !u!65 &6314470090072819686
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8678875584510213904}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.01, y: 0.01, z: 0.010000002}
-  m_Center: {x: 0.000000014901161, y: 0, z: -0.00000002863817}

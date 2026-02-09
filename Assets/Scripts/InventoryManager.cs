@@ -27,6 +27,22 @@ public class InventoryManager : MonoBehaviour
     public AudioClip audioVerbLoop;
     public AudioClip audioObjectLoop;
 
+    [Header("Navigation System")]    
+    public NavigationLine navLine; 
+    
+    public Transform subjectZoneTrig;
+    public Transform verbZoneTrig;
+    public Transform svStationTrig; 
+    public Transform objectZoneTrig;
+    public Transform svoStationTrig; 
+
+    // State Flags
+    private bool reachedSub = false;
+    private bool reachedVerb = false;
+    private bool reachedSV = false;
+    private bool reachedObj = false;
+    private bool reachedSVO = false;
+    
     public bool verbsUnlocked = false;
     public bool objectsUnlocked = false; 
     
@@ -45,47 +61,50 @@ public class InventoryManager : MonoBehaviour
         if (FirebaseAuth.DefaultInstance.CurrentUser != null)
         {
             userId = FirebaseAuth.DefaultInstance.CurrentUser.UserId;
-            // START THE CHAIN
             LoadProgressFlags(); 
         }
     }
 
-    // --- 1. LOAD FLAGS (STEP 1) ---
-    // We MUST know if you unlocked stuff before we check inventory
+    // --- 1. LOAD FLAGS ---
     void LoadProgressFlags()
     {
         dbReference.Child("users").Child(userId).Child("progress").GetValueAsync().ContinueWithOnMainThread(task => 
         {
-            if (task.IsCompleted)
+            if (task.IsCompleted && task.Result.Exists)
             {
-                if (task.Result.Exists)
-                {
-                    DataSnapshot p = task.Result;
-                    
-                    if (p.Child("verbs_unlocked").Exists) 
-                        verbsUnlocked = (bool)p.Child("verbs_unlocked").Value;
-                    
-                    if (p.Child("objects_unlocked").Exists) 
-                        objectsUnlocked = (bool)p.Child("objects_unlocked").Value;
+                DataSnapshot p = task.Result;
+                
+                if (p.Child("verbs_unlocked").Exists) 
+                    verbsUnlocked = bool.Parse(p.Child("verbs_unlocked").Value.ToString());
+                
+                if (p.Child("objects_unlocked").Exists) 
+                    objectsUnlocked = bool.Parse(p.Child("objects_unlocked").Value.ToString());
 
-                    if (p.Child("sentences_completed").Exists) 
-                        currentSVSentenceCount = int.Parse(p.Child("sentences_completed").Value.ToString());
+                if (p.Child("sentences_completed").Exists) 
+                    currentSVSentenceCount = int.Parse(p.Child("sentences_completed").Value.ToString());
 
-                    if (p.Child("svo_sentences_completed").Exists) 
-                        currentSVOSentenceCount = int.Parse(p.Child("svo_sentences_completed").Value.ToString());
-                }
+                if (p.Child("svo_sentences_completed").Exists) 
+                    currentSVOSentenceCount = int.Parse(p.Child("svo_sentences_completed").Value.ToString());
 
-                // Activate Containers based on flags
+                if (p.Child("reached_sub").Exists) reachedSub = bool.Parse(p.Child("reached_sub").Value.ToString());
+                if (p.Child("reached_verb").Exists) reachedVerb = bool.Parse(p.Child("reached_verb").Value.ToString());
+                if (p.Child("reached_sv").Exists) reachedSV = bool.Parse(p.Child("reached_sv").Value.ToString());
+                if (p.Child("reached_obj").Exists) reachedObj = bool.Parse(p.Child("reached_obj").Value.ToString());
+                if (p.Child("reached_svo").Exists) reachedSVO = bool.Parse(p.Child("reached_svo").Value.ToString());
+
                 if (verbsUnlocked && verbContainer != null) verbContainer.SetActive(true);
                 if (objectsUnlocked && objectContainer != null) objectContainer.SetActive(true);
 
-                // CHAIN STEP 2: Now load inventory
+                LoadInventory();
+            }
+            else
+            {
                 LoadInventory();
             }
         });
     }
 
-    // --- 2. LOAD INVENTORY (STEP 2) ---
+    // --- 2. LOAD INVENTORY ---
     void LoadInventory()
     {
         dbReference.Child("users").Child(userId).Child("inventory").GetValueAsync().ContinueWithOnMainThread(task =>
@@ -93,17 +112,17 @@ public class InventoryManager : MonoBehaviour
             if (task.IsCompleted)
             {
                 localInventory.Clear();
-                foreach (DataSnapshot child in task.Result.Children) localInventory.Add(child.Value.ToString());
-                
+                if (task.Result.Exists)
+                {
+                    foreach (DataSnapshot child in task.Result.Children) localInventory.Add(child.Value.ToString());
+                }
                 RefreshUI();
-                
-                // CHAIN STEP 3: Load Placed Items
                 LoadPlacedItems();
             }
         });
     }
 
-    // --- 3. LOAD PLACED ITEMS (STEP 3) ---
+    // --- 3. LOAD PLACED ITEMS ---
     void LoadPlacedItems()
     {
         dbReference.Child("users").Child(userId).Child("placed_items").GetValueAsync().ContinueWithOnMainThread(task =>
@@ -111,30 +130,28 @@ public class InventoryManager : MonoBehaviour
             if (task.IsCompleted)
             {
                 placedItemIDs.Clear();
-                foreach (DataSnapshot child in task.Result.Children)
+                if (task.Result.Exists)
                 {
-                    string wordID = child.Key;
-                    
-                    // Spawn logic
-                    float x = float.Parse(child.Child("x").Value.ToString());
-                    float y = float.Parse(child.Child("y").Value.ToString());
-                    float z = float.Parse(child.Child("z").Value.ToString());
-                    
-                    float rX = float.Parse(child.Child("rX").Value.ToString());
-                    float rY = float.Parse(child.Child("rY").Value.ToString());
-                    float rZ = float.Parse(child.Child("rZ").Value.ToString());
+                    foreach (DataSnapshot child in task.Result.Children)
+                    {
+                        string wordID = child.Key;
+                        float x = float.Parse(child.Child("x").Value.ToString());
+                        float y = float.Parse(child.Child("y").Value.ToString());
+                        float z = float.Parse(child.Child("z").Value.ToString());
+                        float rX = float.Parse(child.Child("rX").Value.ToString());
+                        float rY = float.Parse(child.Child("rY").Value.ToString());
+                        float rZ = float.Parse(child.Child("rZ").Value.ToString());
 
-                    SpawnVisualBlock(wordID, new Vector3(x, y, z), Quaternion.Euler(rX, rY, rZ));
-                    placedItemIDs.Add(wordID);
+                        SpawnVisualBlock(wordID, new Vector3(x, y, z), Quaternion.Euler(rX, rY, rZ));
+                        placedItemIDs.Add(wordID);
+                    }
                 }
-
-                // CHAIN STEP 4: Load Consumed Items
                 LoadConsumedItems();
             }
         });
     }
 
-    // --- 4. LOAD CONSUMED & FINISH (STEP 4) ---
+    // --- 4. LOAD CONSUMED & FINISH ---
     void LoadConsumedItems()
     {
         dbReference.Child("users").Child(userId).Child("consumed_items").GetValueAsync().ContinueWithOnMainThread(task =>
@@ -142,26 +159,211 @@ public class InventoryManager : MonoBehaviour
             if (task.IsCompleted)
             {
                 consumedItemIDs.Clear();
-                foreach (DataSnapshot child in task.Result.Children)
+                if (task.Result.Exists)
                 {
-                    consumedItemIDs.Add(child.Key);
+                    foreach (DataSnapshot child in task.Result.Children) consumedItemIDs.Add(child.Key);
                 }
-
-                // FINAL STEP:
-                // 1. Hide Scene Blocks (using all lists we just loaded)
                 SyncSceneState();
-                
-                // 2. Update HUD (Now that we have Flags + Consumed lists ready)
                 UpdateProgressTracker();
             }
         });
     }
 
-    // --- LOGIC HELPERS ---
-    
-    // UPDATED: Sync Scene Logic
-    // Hides block if it is in Inventory OR Consumed.
-    // DOES NOT hide if placed (so you can see it on the table).
+    // --- SPAWN LOGIC ---
+    void SpawnVisualBlock(string wordID, Vector3 pos, Quaternion rot)
+    {
+        GameObject prefab = GetPrefabByID(wordID);
+        if (prefab != null) 
+        {
+            GameObject clone = Instantiate(prefab, pos, rot);
+            WordBlock wb = clone.GetComponent<WordBlock>();
+            if (wb != null) wb.wordID = wordID; 
+        }
+    }
+
+    // --- COLLECT LOGIC ---
+    public void CollectWord(string wordID, GameObject collectedObj = null)
+    {
+        if (localInventory.Contains(wordID)) 
+        {
+            if (collectedObj != null) Destroy(collectedObj);
+            dbReference.Child("users").Child(userId).Child("placed_items").Child(wordID).RemoveValueAsync();
+            if(placedItemIDs.Contains(wordID)) placedItemIDs.Remove(wordID);
+            return;
+        }
+
+        localInventory.Add(wordID);
+        dbReference.Child("users").Child(userId).Child("inventory").Child(wordID).SetValueAsync(wordID);
+
+        dbReference.Child("users").Child(userId).Child("placed_items").Child(wordID).RemoveValueAsync();
+        if(placedItemIDs.Contains(wordID)) placedItemIDs.Remove(wordID);
+        
+        if (collectedObj != null) Destroy(collectedObj);
+        
+        GameObject shelfObj = FindBlockInScene(wordID);
+        if (shelfObj != null) shelfObj.SetActive(false);
+
+        RefreshUI();
+        UpdateProgressTracker();
+        CheckProgression();
+    }
+
+    public void SpawnItem(string wordID)
+    {
+        if (!localInventory.Contains(wordID)) return;
+        
+        Vector3 spawnPos = headCamera.position + (headCamera.forward * 0.8f);
+        Quaternion spawnRot = Quaternion.Euler(0, headCamera.eulerAngles.y, 0);
+        
+        SpawnVisualBlock(wordID, spawnPos, spawnRot);
+        localInventory.Remove(wordID);
+        dbReference.Child("users").Child(userId).Child("inventory").Child(wordID).RemoveValueAsync();
+        
+        SaveBlockLocation(wordID, spawnPos, spawnRot);
+        RefreshUI();
+        UpdateProgressTracker();
+    }
+
+    public void SaveBlockLocation(string wordID, Vector3 pos, Quaternion rot)
+    {
+        if (string.IsNullOrEmpty(userId)) return;
+        
+        Dictionary<string, object> locData = new Dictionary<string, object>();
+        locData["x"] = pos.x; locData["y"] = pos.y; locData["z"] = pos.z;
+        locData["rX"] = rot.eulerAngles.x; locData["rY"] = rot.eulerAngles.y; locData["rZ"] = rot.eulerAngles.z;
+        
+        dbReference.Child("users").Child(userId).Child("placed_items").Child(wordID).SetValueAsync(locData);
+        if(!placedItemIDs.Contains(wordID)) placedItemIDs.Add(wordID);
+    }
+
+    // --- PROGRESS TRACKER (UPDATED LOGIC) ---
+    public void UpdateProgressTracker()
+    {
+        int subjectCount = 0;
+        int verbCount = 0;
+        int objectCount = 0;
+
+        foreach (string id in localInventory)
+        {
+            if (id.StartsWith("sub_")) subjectCount++;
+            if (id.StartsWith("verb_")) verbCount++;
+            if (id.StartsWith("obj_") || id.StartsWith("Object_")) objectCount++;
+        }
+
+        // Fail-Safe: Force zones if items are present
+        if (subjectCount > 0) reachedSub = true;
+        if (verbCount > 0) reachedVerb = true;
+        if (currentSVSentenceCount > 0) reachedSV = true;
+        if (objectCount > 0) reachedObj = true;
+        if (currentSVOSentenceCount > 0) reachedSVO = true;
+
+        string uiText = "";
+        Transform arrowTarget = null;
+
+        // --- ORDER OF CHECKS ---
+
+        // 1. SVO Phase (End Game)
+        if (reachedSVO || (objectsUnlocked && objectCount >= 5 && reachedObj && reachedSVO))
+        {
+             uiText = $"Form SVO Sentences: {currentSVOSentenceCount}/5";
+             arrowTarget = null;
+        }
+        // 2. Object Phase (Only check this if Objects are unlocked)
+        else if (objectsUnlocked)
+        {
+            // If objects are unlocked, we are PAST Subject/Verb collection forever.
+            if (!reachedObj) 
+            {
+                uiText = "Follow Line to Object Area"; 
+                arrowTarget = objectZoneTrig; 
+            }
+            else if (objectCount < 5) 
+            { 
+                uiText = $"Collect Objects"; 
+                arrowTarget = null; 
+            }
+            else 
+            { 
+                // --- THE SPECIFIC REQUEST ---
+                uiText = "Go to the white barn"; 
+                arrowTarget = svoStationTrig; 
+            }
+        }
+        // 3. SV Sentence Phase (Only check this if Verbs are unlocked)
+        else if (reachedSV || (verbsUnlocked && verbCount >= 10))
+        {
+             uiText = $"Form SV Sentences";
+             arrowTarget = null;
+        }
+        // 4. Verb Phase (Only check this if Verbs are unlocked)
+        else if (verbsUnlocked)
+        {
+            if (!reachedVerb) { uiText = "Follow Line to Verb Area"; arrowTarget = verbZoneTrig; }
+            else if (verbCount < 10) { uiText = $"Collect Verbs"; arrowTarget = null; }
+            else { uiText = "Go to the White House"; arrowTarget = svStationTrig; }
+        }
+        // 5. Subject Phase (Default Start)
+        else
+        {
+            if (!reachedSub) { uiText = "Follow Line to Subject Area"; arrowTarget = subjectZoneTrig; }
+            else { uiText = $"Collect Subjects"; arrowTarget = null; }
+        }
+
+        // --- Apply to UI ---
+        if (ProgressHUD.Instance != null)
+        {
+            if (arrowTarget != null) ProgressHUD.Instance.UpdateProgress(uiText, 0, 0); 
+            else
+            {
+                int current = 0; int max = 10;
+                if(uiText.Contains("Subject")) { current = subjectCount; max = 10; }
+                else if(uiText.Contains("Verb")) { current = verbCount; max = 10; }
+                else if(uiText.Contains("SV Sen")) { current = currentSVSentenceCount; max = 5; }
+                else if(uiText.Contains("Object")) { current = objectCount; max = 5; }
+                else if(uiText.Contains("SVO")) { current = currentSVOSentenceCount; max = 5; }
+                ProgressHUD.Instance.UpdateProgress(uiText, current, max);
+            }
+        }
+
+        if (navLine != null) navLine.target = arrowTarget;
+    }
+
+    // --- TRIGGER LOGIC ---
+    public void PlayerReachedZone(ZoneTrigger.ZoneType type)
+    {
+        bool stateChanged = false;
+
+        switch (type)
+        {
+            case ZoneTrigger.ZoneType.SubjectZone: 
+                if (!reachedSub) { reachedSub = true; SaveZoneFlag("reached_sub"); stateChanged = true; }
+                break;
+            case ZoneTrigger.ZoneType.VerbZone: 
+                if (!reachedVerb) { reachedVerb = true; SaveZoneFlag("reached_verb"); stateChanged = true; }
+                break;
+            case ZoneTrigger.ZoneType.SVStation: 
+                if (!reachedSV) { reachedSV = true; SaveZoneFlag("reached_sv"); stateChanged = true; }
+                break;
+            case ZoneTrigger.ZoneType.ObjectZone: 
+                if (!reachedObj) { reachedObj = true; SaveZoneFlag("reached_obj"); stateChanged = true; }
+                break;
+            case ZoneTrigger.ZoneType.SVOStation: 
+                if (!reachedSVO) { reachedSVO = true; SaveZoneFlag("reached_svo"); stateChanged = true; }
+                break;
+        }
+
+        if (stateChanged) UpdateProgressTracker(); 
+    }
+
+    void SaveZoneFlag(string key)
+    {
+        if (dbReference != null && !string.IsNullOrEmpty(userId))
+        {
+            dbReference.Child("users").Child(userId).Child("progress").Child(key).SetValueAsync(true);
+        }
+    }
+
+    // --- UTILS ---
     void SyncSceneState()
     {
         CheckContainer(subjectContainer);
@@ -177,110 +379,24 @@ public class InventoryManager : MonoBehaviour
             WordBlock b = child.GetComponent<WordBlock>();
             if (b != null)
             {
-                // We DON'T include 'placedItemIDs' here because you want placed items to be visible.
-                bool shouldHide = localInventory.Contains(b.wordID) 
-                               || consumedItemIDs.Contains(b.wordID);
-                
+                bool shouldHide = localInventory.Contains(b.wordID) || consumedItemIDs.Contains(b.wordID);
                 child.gameObject.SetActive(!shouldHide);
             }
         }
     }
 
-    public void UpdateProgressTracker()
-    {
-        int subjectCount = 0;
-        int verbCount = 0;
-        int objectCount = 0;
-
-        foreach (string id in localInventory)
-        {
-            if (id.StartsWith("sub_")) subjectCount++;
-            if (id.StartsWith("verb_")) verbCount++;
-            
-            // --- THE FIX ---
-            // Check for both "Obj_" AND "Object_" to be safe
-            if (id.StartsWith("obj_") || id.StartsWith("Object_")) objectCount++;
-            // ----------------
-        }
-
-        if (ProgressHUD.Instance != null)
-        {
-            if (!verbsUnlocked)
-            {
-                ProgressHUD.Instance.UpdateProgress("Collect Subjects", subjectCount, 10);
-            }
-            else if (!AreShelfBlocksCollected(subjectContainer) || !AreShelfBlocksCollected(verbContainer.transform))
-            {
-                 ProgressHUD.Instance.UpdateProgress("Collect Verbs", verbCount, 10);
-            }
-            else if (!objectsUnlocked)
-            {
-                 ProgressHUD.Instance.UpdateProgress("Form Sentences (SV)", currentSVSentenceCount, 5);
-            }
-            // Check Phase 4
-            else if (!AreShelfBlocksCollected(objectContainer.transform))
-            {
-                 // Now objectCount will correctly show 1, 2, 3...
-                 ProgressHUD.Instance.UpdateProgress("Collect Objects", objectCount, 5);
-            }
-            else
-            {
-                 ProgressHUD.Instance.UpdateProgress("Form Sentences (SVO)", currentSVOSentenceCount, 5);
-            }
-        }
-    }
-
-    // UPDATED: Check if shelves are empty
-    // Considers a block "collected" if it is hidden OR if it is placed on the table
     public bool AreShelfBlocksCollected(Transform container)
     {
         if (container == null) return true;
         foreach (Transform child in container)
         {
             WordBlock wb = child.GetComponent<WordBlock>();
-            
-            // If the block is Active (visible on shelf)
             if (wb != null && child.gameObject.activeSelf)
             {
-                // Exception: It's active, but we placed it on the table? Then count it as collected.
-                if (!placedItemIDs.Contains(wb.wordID)) 
-                {
-                    return false; // Actually missing from collection
-                }
+                if (!placedItemIDs.Contains(wb.wordID)) return false; 
             }
         }
         return true;
-    }
-
-    // --- STANDARD FUNCTIONS (Copy/Paste these exactly as they were) ---
-
-    public void CollectWord(string wordID)
-    {
-        if (localInventory.Contains(wordID)) return;
-        localInventory.Add(wordID);
-        dbReference.Child("users").Child(userId).Child("inventory").Child(wordID).SetValueAsync(wordID);
-        dbReference.Child("users").Child(userId).Child("placed_items").Child(wordID).RemoveValueAsync();
-        if(placedItemIDs.Contains(wordID)) placedItemIDs.Remove(wordID);
-        
-        GameObject sceneObj = FindBlockInScene(wordID);
-        if (sceneObj != null) sceneObj.SetActive(false);
-
-        RefreshUI();
-        UpdateProgressTracker();
-        CheckProgression();
-    }
-
-    public void SpawnItem(string wordID)
-    {
-        if (!localInventory.Contains(wordID)) return;
-        Vector3 spawnPos = headCamera.position + (headCamera.forward * 0.8f);
-        Quaternion spawnRot = Quaternion.Euler(0, headCamera.eulerAngles.y, 0);
-        SpawnVisualBlock(wordID, spawnPos, spawnRot);
-        localInventory.Remove(wordID);
-        RefreshUI();
-        dbReference.Child("users").Child(userId).Child("inventory").Child(wordID).RemoveValueAsync();
-        SaveBlockLocation(wordID, spawnPos, spawnRot);
-        UpdateProgressTracker();
     }
 
     public void MarkItemAsConsumed(string wordID)
@@ -294,11 +410,11 @@ public class InventoryManager : MonoBehaviour
         if (placedItemIDs.Contains(wordID)) placedItemIDs.Remove(wordID);
     }
     
-    // Progression Checks
     void CheckProgression()
     {
         int subCount = 0;
         foreach(string s in localInventory) if(s.StartsWith("sub_")) subCount++;
+        
         if (subCount >= 10 && !verbsUnlocked)
         {
             verbsUnlocked = true;
@@ -325,14 +441,7 @@ public class InventoryManager : MonoBehaviour
         return true;
     }
 
-    // Helpers
     public void RefreshUI() { if (InventoryUI.Instance != null) InventoryUI.Instance.UpdateDisplay(localInventory); }
-    
-    void SpawnVisualBlock(string wordID, Vector3 pos, Quaternion rot)
-    {
-        GameObject prefab = GetPrefabByID(wordID);
-        if (prefab != null) Instantiate(prefab, pos, rot);
-    }
     
     GameObject GetPrefabByID(string id)
     {
@@ -362,22 +471,9 @@ public class InventoryManager : MonoBehaviour
         }
         return null;
     }
-    
-    public void SaveBlockLocation(string wordID, Vector3 pos, Quaternion rot)
-    {
-        if (string.IsNullOrEmpty(userId)) return;
-        Dictionary<string, object> locData = new Dictionary<string, object>();
-        locData["x"] = pos.x; locData["y"] = pos.y; locData["z"] = pos.z;
-        locData["rX"] = rot.eulerAngles.x; locData["rY"] = rot.eulerAngles.y; locData["rZ"] = rot.eulerAngles.z;
-        dbReference.Child("users").Child(userId).Child("placed_items").Child(wordID).SetValueAsync(locData);
-        if(!placedItemIDs.Contains(wordID)) placedItemIDs.Add(wordID);
-    }
 
     public bool IsItemKnown(string wordID)
-{
-    // Returns TRUE if the player has found this item (in pocket, on table, or used)
-    return localInventory.Contains(wordID) 
-        || placedItemIDs.Contains(wordID) 
-        || consumedItemIDs.Contains(wordID);
-}
+    {
+        return localInventory.Contains(wordID) || placedItemIDs.Contains(wordID) || consumedItemIDs.Contains(wordID);
+    }
 }

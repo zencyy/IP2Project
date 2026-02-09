@@ -167,7 +167,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: The Fire
+  m_text: The FIre
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -253,11 +253,8 @@ GameObject:
   - component: {fileID: 6535626806053274923}
   - component: {fileID: 8390457633175131051}
   - component: {fileID: 793174487561948520}
-  - component: {fileID: 805555367409099155}
-  - component: {fileID: 3823118875551533720}
   - component: {fileID: 7736107175215681597}
   - component: {fileID: 4417681113187225450}
-  - component: {fileID: 22515341121245337}
   m_Layer: 0
   m_Name: sub_fire
   m_TagString: Untagged
@@ -416,37 +413,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &805555367409099155
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5516767956276200056}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e7517354744acf644bdb8a473ab239c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WordBlock
-  myType: 0
-  wordText: The Fire
-  wordID: sub_fire
-  destroyOnCollect: 1
-  isCollectable: 1
---- !u!114 &3823118875551533720
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5516767956276200056}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e747c5618079f6b4488959ed3540e5c0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WordAudioEmitter
-  minDistance: 1
-  maxDistance: 15
 --- !u!114 &7736107175215681597
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -586,24 +552,3 @@ MonoBehaviour:
   m_LimitAngularVelocity: 0
   m_MaxLinearVelocityDelta: 10
   m_MaxAngularVelocityDelta: 20
---- !u!65 &22515341121245337
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5516767956276200056}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.01, y: 0.01, z: 0.010000002}
-  m_Center: {x: -0.000000022351742, y: 0, z: 0.0000000011641532}

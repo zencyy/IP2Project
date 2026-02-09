@@ -15,8 +15,6 @@ GameObject:
   - component: {fileID: 4619211084548314824}
   - component: {fileID: 9218688618503064395}
   - component: {fileID: 2711329599186533197}
-  - component: {fileID: 4146157560355950012}
-  - component: {fileID: 6255384480760289037}
   - component: {fileID: 2068442277754685325}
   - component: {fileID: 5308173027366191161}
   - component: {fileID: 3377147187804268672}
@@ -163,37 +161,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27b6887a593240c48b8d82eeb927590c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ObjectStateTracker
---- !u!114 &4146157560355950012
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2111915447323922776}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e7517354744acf644bdb8a473ab239c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WordBlock
-  myType: 0
-  wordText: The Cat
-  wordID: sub_cat
-  destroyOnCollect: 1
-  isCollectable: 1
---- !u!114 &6255384480760289037
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2111915447323922776}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e747c5618079f6b4488959ed3540e5c0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WordAudioEmitter
-  minDistance: 1
-  maxDistance: 15
 --- !u!54 &2068442277754685325
 Rigidbody:
   m_ObjectHideFlags: 0
