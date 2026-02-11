@@ -136,6 +136,8 @@ MonoBehaviour:
   wordID: obj_ball
   destroyOnCollect: 1
   isCollectable: 1
+  collectSound: {fileID: 8300000, guid: ce3a154f11007cc468a4ee7278099621, type: 3}
+  soundVolume: 1
 --- !u!114 &8716292702225501498
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -167,6 +169,8 @@ MonoBehaviour:
   wordID: obj_ball
   destroyOnCollect: 1
   isCollectable: 1
+  collectSound: {fileID: 0}
+  soundVolume: 1
 --- !u!114 &9041343656460656239
 MonoBehaviour:
   m_ObjectHideFlags: 0

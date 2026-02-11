@@ -53,31 +53,21 @@ public class RaycastCollector : MonoBehaviour
 
     void TryCollect()
     {
-        // Check if the ray is hitting anything valid
         if (rayInteractor.TryGetCurrent3DRaycastHit(out RaycastHit hit))
         {
             WordBlock block = hit.collider.GetComponentInParent<WordBlock>();
 
             if (block != null)
             {
-                // Safety Check: Is it collectable?
-                if (!block.isCollectable) 
-                {
-                    Debug.Log($"Hit {block.name}, but it is not collectable.");
-                    return; 
-                }
-
                 // --- THE FIX IS HERE ---
-                if (InventoryManager.Instance != null)
-                {
-                    // OLD: InventoryManager.Instance.CollectWord(block.wordID);
-                    
-                    // NEW: Pass 'block.gameObject' as the second argument!
-                    // This tells the Manager: "Update the DB for this ID, AND destroy this specific object."
-                    InventoryManager.Instance.CollectWord(block.wordID, block.gameObject);
-                    
-                    Debug.Log($"Collected: {block.wordID}");
-                }
+                
+                // OLD WAY (Bypassed the sound):
+                // InventoryManager.Instance.CollectWord(block.wordID, block.gameObject);
+
+                // NEW WAY (Runs the code in WordBlock.cs, which plays the sound):
+                block.Collect(); 
+                
+                // -----------------------
             }
         }
     }
