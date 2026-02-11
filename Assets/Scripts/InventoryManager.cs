@@ -13,6 +13,8 @@ public class InventoryManager : MonoBehaviour
     public GameObject verbContainer;
     public GameObject objectContainer; 
     public Transform headCamera;       
+    
+    public GameEndingUI gameEndingUI; 
 
     [Header("Item Database")]
     public List<GameObject> allPrefabs; 
@@ -48,6 +50,8 @@ public class InventoryManager : MonoBehaviour
     
     public int currentSVSentenceCount = 0;
     public int currentSVOSentenceCount = 0; 
+    
+    private bool gameEnded = false; 
 
     private DatabaseReference dbReference;
     private string userId;
@@ -151,7 +155,7 @@ public class InventoryManager : MonoBehaviour
         });
     }
 
-    // --- 4. LOAD CONSUMED & FINISH ---
+    // --- 4. LOAD CONSUMED ---
     void LoadConsumedItems()
     {
         dbReference.Child("users").Child(userId).Child("consumed_items").GetValueAsync().ContinueWithOnMainThread(task =>
@@ -227,16 +231,21 @@ public class InventoryManager : MonoBehaviour
     public void SaveBlockLocation(string wordID, Vector3 pos, Quaternion rot)
     {
         if (string.IsNullOrEmpty(userId)) return;
-        
         Dictionary<string, object> locData = new Dictionary<string, object>();
         locData["x"] = pos.x; locData["y"] = pos.y; locData["z"] = pos.z;
         locData["rX"] = rot.eulerAngles.x; locData["rY"] = rot.eulerAngles.y; locData["rZ"] = rot.eulerAngles.z;
-        
         dbReference.Child("users").Child(userId).Child("placed_items").Child(wordID).SetValueAsync(locData);
         if(!placedItemIDs.Contains(wordID)) placedItemIDs.Add(wordID);
     }
+    
+    public void IncrementSVOSentence()
+    {
+        currentSVOSentenceCount++;
+        dbReference.Child("users").Child(userId).Child("progress").Child("svo_sentences_completed").SetValueAsync(currentSVOSentenceCount);
+        UpdateProgressTracker();
+    }
 
-    // --- PROGRESS TRACKER (UPDATED LOGIC) ---
+    // --- PROGRESS TRACKER (FIXED COUNT LOGIC) ---
     public void UpdateProgressTracker()
     {
         int subjectCount = 0;
@@ -250,7 +259,7 @@ public class InventoryManager : MonoBehaviour
             if (id.StartsWith("obj_") || id.StartsWith("Object_")) objectCount++;
         }
 
-        // Fail-Safe: Force zones if items are present
+        // Fail-Safe: If you have items, you MUST have reached that zone
         if (subjectCount > 0) reachedSub = true;
         if (verbCount > 0) reachedVerb = true;
         if (currentSVSentenceCount > 0) reachedSV = true;
@@ -259,68 +268,105 @@ public class InventoryManager : MonoBehaviour
 
         string uiText = "";
         Transform arrowTarget = null;
+        
+        // --- STRICT SEQUENTIAL LOGIC ---
 
-        // --- ORDER OF CHECKS ---
-
-        // 1. SVO Phase (End Game)
-        if (reachedSVO || (objectsUnlocked && objectCount >= 5 && reachedObj && reachedSVO))
+        // 0. Game Over
+        if (currentSVOSentenceCount >= 5)
         {
-             uiText = $"Form SVO Sentences: {currentSVOSentenceCount}/5";
-             arrowTarget = null;
+            uiText = "Congratulations! You Completed the Game!";
+            arrowTarget = null;
+            if (!gameEnded)
+            {
+                gameEnded = true;
+                if (gameEndingUI != null) gameEndingUI.ShowVictory();
+            }
         }
-        // 2. Object Phase (Only check this if Objects are unlocked)
+        // 1. SVO Phase (Objects Unlocked)
         else if (objectsUnlocked)
         {
-            // If objects are unlocked, we are PAST Subject/Verb collection forever.
+            // A. Go to Zone
             if (!reachedObj) 
             {
                 uiText = "Follow Line to Object Area"; 
                 arrowTarget = objectZoneTrig; 
             }
-            else if (objectCount < 5) 
+            // B. Collect (Safety: Check count ONLY if we haven't reached the barn yet)
+            else if (objectCount < 5 && !reachedSVO) 
             { 
-                uiText = $"Collect Objects"; 
+                uiText = $"Collect Objects: {objectCount}/5"; 
                 arrowTarget = null; 
             }
-            else 
+            // C. Go to Barn
+            else if (!reachedSVO)
             { 
-                // --- THE SPECIFIC REQUEST ---
                 uiText = "Go to the white barn"; 
                 arrowTarget = svoStationTrig; 
             }
+            // D. Form Sentences
+            else 
+            {
+                 uiText = $"Form SVO Sentences: {currentSVOSentenceCount}/5";
+                 arrowTarget = null;
+            }
         }
-        // 3. SV Sentence Phase (Only check this if Verbs are unlocked)
-        else if (reachedSV || (verbsUnlocked && verbCount >= 10))
-        {
-             uiText = $"Form SV Sentences";
-             arrowTarget = null;
-        }
-        // 4. Verb Phase (Only check this if Verbs are unlocked)
+        // 2. SV Sentence Phase (Verbs Unlocked)
         else if (verbsUnlocked)
         {
-            if (!reachedVerb) { uiText = "Follow Line to Verb Area"; arrowTarget = verbZoneTrig; }
-            else if (verbCount < 10) { uiText = $"Collect Verbs"; arrowTarget = null; }
-            else { uiText = "Go to the White House"; arrowTarget = svStationTrig; }
+            // FIX: If unlocked, IGNORE verbCount. Only check progression.
+            if (!reachedSV)
+            {
+                uiText = "Go to the White House"; 
+                arrowTarget = svStationTrig; 
+            }
+            else 
+            {
+                 uiText = $"Form SV Sentences: {currentSVSentenceCount}/5";
+                 arrowTarget = null;
+            }
         }
-        // 5. Subject Phase (Default Start)
+        // 3. Subject Phase / Early Game (Must check counts here)
         else
         {
-            if (!reachedSub) { uiText = "Follow Line to Subject Area"; arrowTarget = subjectZoneTrig; }
-            else { uiText = $"Collect Subjects"; arrowTarget = null; }
+            // Initial State
+            if (!reachedSub) 
+            { 
+                uiText = "Follow Line to Subject Area"; 
+                arrowTarget = subjectZoneTrig; 
+            }
+            else if (subjectCount < 10) 
+            { 
+                uiText = $"Collect Subjects: {subjectCount}/10"; 
+                arrowTarget = null; 
+            }
+            // Transition to Verbs
+            else if (!reachedVerb) 
+            {
+                uiText = "Follow Line to Verb Area";
+                arrowTarget = verbZoneTrig;
+            }
+            else if (verbCount < 10) 
+            {
+                uiText = $"Collect Verbs: {verbCount}/10";
+                arrowTarget = null;
+            }
         }
 
-        // --- Apply to UI ---
+        // --- Apply Updates ---
         if (ProgressHUD.Instance != null)
         {
             if (arrowTarget != null) ProgressHUD.Instance.UpdateProgress(uiText, 0, 0); 
             else
             {
                 int current = 0; int max = 10;
+                
                 if(uiText.Contains("Subject")) { current = subjectCount; max = 10; }
                 else if(uiText.Contains("Verb")) { current = verbCount; max = 10; }
                 else if(uiText.Contains("SV Sen")) { current = currentSVSentenceCount; max = 5; }
                 else if(uiText.Contains("Object")) { current = objectCount; max = 5; }
-                else if(uiText.Contains("SVO")) { current = currentSVOSentenceCount; max = 5; }
+                else if(uiText.Contains("SVO") && !uiText.Contains("Congrat")) { current = currentSVOSentenceCount; max = 5; }
+                else if(uiText.Contains("Congrat")) { current = 5; max = 5; }
+                
                 ProgressHUD.Instance.UpdateProgress(uiText, current, max);
             }
         }
@@ -328,7 +374,6 @@ public class InventoryManager : MonoBehaviour
         if (navLine != null) navLine.target = arrowTarget;
     }
 
-    // --- TRIGGER LOGIC ---
     public void PlayerReachedZone(ZoneTrigger.ZoneType type)
     {
         bool stateChanged = false;
@@ -351,7 +396,6 @@ public class InventoryManager : MonoBehaviour
                 if (!reachedSVO) { reachedSVO = true; SaveZoneFlag("reached_svo"); stateChanged = true; }
                 break;
         }
-
         if (stateChanged) UpdateProgressTracker(); 
     }
 
@@ -363,7 +407,6 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    // --- UTILS ---
     void SyncSceneState()
     {
         CheckContainer(subjectContainer);
@@ -415,6 +458,7 @@ public class InventoryManager : MonoBehaviour
         int subCount = 0;
         foreach(string s in localInventory) if(s.StartsWith("sub_")) subCount++;
         
+        // Only verify this if we haven't unlocked yet
         if (subCount >= 10 && !verbsUnlocked)
         {
             verbsUnlocked = true;
