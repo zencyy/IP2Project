@@ -354,6 +354,8 @@ MonoBehaviour:
   wordID: verb_flies
   destroyOnCollect: 1
   isCollectable: 1
+  collectSound: {fileID: 8300000, guid: ce3a154f11007cc468a4ee7278099621, type: 3}
+  soundVolume: 1
 --- !u!114 &167538223566596161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -418,6 +420,8 @@ MonoBehaviour:
   wordID: verb_flies
   destroyOnCollect: 1
   isCollectable: 1
+  collectSound: {fileID: 0}
+  soundVolume: 1
 --- !u!114 &7726611172349219352
 MonoBehaviour:
   m_ObjectHideFlags: 0

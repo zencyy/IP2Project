@@ -16,10 +16,14 @@ public class WordBlock : MonoBehaviour
     [Header("Settings")]
     public bool isCollectable = true;
 
+    // --- NEW: AUDIO SETTINGS ---
+    [Header("Audio")]
+    public AudioClip collectSound; // Drag your sound clip here in the Inspector
+    [Range(0f, 1f)] public float soundVolume = 1.0f; // Control volume (0 to 1)
+
     void Start()
     {
         UpdateTextDisplay();
-        // Auto-fix ID if empty
         if (string.IsNullOrEmpty(wordID)) wordID = gameObject.name;
     }
 
@@ -35,11 +39,18 @@ public class WordBlock : MonoBehaviour
         if (textMesh != null) textMesh.text = wordText;
     }
 
-    // --- THE FIX IS HERE ---
-    // This function must be called by the XR Grab Interactable
     public void Collect()
     {
         if (!isCollectable) return;
+
+        // --- NEW: PLAY SOUND ---
+        if (collectSound != null)
+        {
+            // We use PlayClipAtPoint because this object is about to be destroyed.
+            // This creates a temporary object at this position to play the audio.
+            AudioSource.PlayClipAtPoint(collectSound, transform.position, soundVolume);
+        }
+        // -----------------------
 
         if (InventoryManager.Instance != null)
         {

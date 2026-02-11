@@ -354,6 +354,8 @@ MonoBehaviour:
   wordID: sub_sun
   destroyOnCollect: 1
   isCollectable: 1
+  collectSound: {fileID: 8300000, guid: ce3a154f11007cc468a4ee7278099621, type: 3}
+  soundVolume: 1
 --- !u!114 &4019554065780140714
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -406,6 +408,8 @@ MonoBehaviour:
   wordID: sub_sun
   destroyOnCollect: 1
   isCollectable: 1
+  collectSound: {fileID: 0}
+  soundVolume: 1
 --- !u!114 &2814819647714916295
 MonoBehaviour:
   m_ObjectHideFlags: 0

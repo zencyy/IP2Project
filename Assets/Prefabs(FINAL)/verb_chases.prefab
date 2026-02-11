@@ -116,6 +116,8 @@ MonoBehaviour:
   wordID: verb_chases
   destroyOnCollect: 1
   isCollectable: 1
+  collectSound: {fileID: 8300000, guid: ce3a154f11007cc468a4ee7278099621, type: 3}
+  soundVolume: 1
 --- !u!114 &8100028235192721896
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -195,6 +197,8 @@ MonoBehaviour:
   wordID: verb_chases
   destroyOnCollect: 1
   isCollectable: 1
+  collectSound: {fileID: 0}
+  soundVolume: 1
 --- !u!114 &3373543124425905115
 MonoBehaviour:
   m_ObjectHideFlags: 0
