@@ -15,68 +15,37 @@ public class AuthManager : MonoBehaviour
     public TMP_Text statusText;
 
     [Header("Settings")]
-    public string gameSceneName = "Terrain"; // Change to your game scene name
+    public string gameSceneName = "World_Main"; // Change to your game scene name
 
     private FirebaseAuth auth;
     private DatabaseReference dbReference;
 
     void Start()
     {
-        UpdateStatus("Checking Dependencies...");
-
+        // Initialize Firebase
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task => {
             var dependencyStatus = task.Result;
-
             if (dependencyStatus == DependencyStatus.Available)
             {
-                // Perfect scenario (Editor)
                 InitializeFirebase();
             }
             else
             {
-                // --- THE QUEST FIX ---
-                // The Quest often returns "ServiceMissing" because it has no Google Play Store.
-                // We force initialization anyway because Auth/RTDB don't strictly need it.
-                
-                Debug.LogError($"Dependency Check Failed: {dependencyStatus}. Attempting to force initialize...");
-                UpdateStatus($"Status: {dependencyStatus}. Forcing Init...");
-                
-                InitializeFirebase(); // <--- CALL IT ANYWAY
+                Debug.LogError($"Could not resolve all Firebase dependencies: {dependencyStatus}");
             }
         });
     }
 
     void InitializeFirebase()
     {
-        try 
-        {
-            auth = FirebaseAuth.DefaultInstance;
-            
-            // --- FIX START ---
-            // 1. Go to Firebase Console > Realtime Database > Data Tab
-            // 2. Copy the URL at the top (e.g. "https://your-project.firebaseio.com/")
-            string dbUrl = "https://fymstudio-a8928-default-rtdb.asia-southeast1.firebasedatabase.app/"; 
-            
-            // 3. Pass it explicitly here:
-            dbReference = FirebaseDatabase.GetInstance(dbUrl).RootReference;
-            // --- FIX END ---
-
-            UpdateStatus("Ready to Login (Quest Mode)");
-        }
-        catch (System.Exception e)
-        {
-            UpdateStatus($"Fatal Init Error: {e.Message}");
-        }
+        auth = FirebaseAuth.DefaultInstance;
+        dbReference = FirebaseDatabase.GetInstance("https://fymstudio-a8928-default-rtdb.asia-southeast1.firebasedatabase.app/").RootReference;        UpdateStatus("Ready to Login");
     }
+
     // --- BUTTON FUNCTIONS ---
 
     public void OnLoginPressed()
     {
-        if (auth == null)
-        {
-            UpdateStatus("CRITICAL ERROR: Firebase not initialized.\nCheck Package Name in Firebase Console.");
-            return;
-        }
         string email = emailField.text;
         string password = passwordField.text;
 
