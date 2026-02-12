@@ -1,8 +1,13 @@
 using UnityEngine;
-using UnityEngine.Windows.Speech; 
 using System.Collections.Generic;
-using System.Linq;
 using System;
+using UnityEngine.InputSystem; 
+using UnityEngine.InputSystem.Controls; 
+using UnityEngine.InputSystem.XR;
+
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
+using UnityEngine.Windows.Speech;
+#endif
 
 public class VoiceManager : MonoBehaviour
 {
@@ -14,7 +19,10 @@ public class VoiceManager : MonoBehaviour
     public AudioClip listenSuccessClip;
     public AudioClip listenFailClip;
 
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
     private KeywordRecognizer keywordRecognizer;
+#endif
+
     private Action<bool> currentCallback;
     private bool isListening = false;
 
@@ -23,68 +31,99 @@ public class VoiceManager : MonoBehaviour
         Instance = this;
     }
 
+    // --- THE ROBUST UPDATE LOOP ---
+    void Update()
+    {
+#if !UNITY_STANDALONE_WIN && !UNITY_EDITOR_WIN
+        if (isListening)
+        {
+            // 1. Loop through every single input device connected to the system
+            foreach (var device in InputSystem.devices)
+            {
+                // We only care about XR Controllers (Left or Right hand)
+                if (device is XRController)
+                {
+                    // 2. Try to find the "trigger" control on this device
+                    var triggerControl = device.GetChildControl<AxisControl>("trigger");
+                    
+                    // 3. Check if it exists AND is pressed down (value > 0.5f)
+                    if (triggerControl != null && triggerControl.ReadValue() > 0.5f)
+                    {
+                        Success($"Trigger on {device.name}");
+                        return;
+                    }
+
+                    // 4. Also check the 'A' or 'X' button (Primary Button)
+                    var primaryControl = device.GetChildControl<ButtonControl>("primaryButton");
+                    if (primaryControl != null && primaryControl.isPressed)
+                    {
+                        Success($"Primary Button on {device.name}");
+                        return;
+                    }
+                }
+            }
+        }
+#endif
+    }
+
+    void Success(string source)
+    {
+        Debug.Log($"[Voice] Success detected via: {source}");
+        CompleteListening(true);
+    }
+
     public void ListenForPhrase(string phrase, Action<bool> onResult)
     {
-        // Prevent double-clicks
         if (isListening) return;
 
         currentCallback = onResult;
+        Debug.Log($"[Voice] Listening for: '{phrase}'");
 
-        // Clean up text
-        string cleanPhrase = CleanText(phrase);
-        Debug.Log($"[Voice] Listening for: '{cleanPhrase}'");
+        if (audioSource && listenStartClip) audioSource.PlayOneShot(listenStartClip);
 
-        if(audioSource && listenStartClip) audioSource.PlayOneShot(listenStartClip);
-
-        // --- THE FIX: ROBUST CLEANUP ---
-        // We must Dispose() the old one even if it is NOT running.
-        if (keywordRecognizer != null)
-        {
-            if (keywordRecognizer.IsRunning)
-            {
-                keywordRecognizer.Stop();
-            }
-            keywordRecognizer.Dispose();
-            keywordRecognizer = null;
-        }
-        // -------------------------------
-
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
+        // WINDOWS LOGIC (PC)
+        if (keywordRecognizer != null) { keywordRecognizer.Dispose(); }
+        
         try 
         {
-            keywordRecognizer = new KeywordRecognizer(new string[] { cleanPhrase });
+            keywordRecognizer = new KeywordRecognizer(new string[] { phrase });
             keywordRecognizer.OnPhraseRecognized += OnPhraseRecognized;
             keywordRecognizer.Start();
-            
             isListening = true;
-            
             CancelInvoke(nameof(StopListeningTimeout));
             Invoke(nameof(StopListeningTimeout), 5.0f);
         }
         catch (UnityException e)
         {
-            Debug.LogError($"[Voice Error] Failed to start recognition: {e.Message}");
-            // Fail gracefully so the game doesn't break
+            Debug.LogError($"[Voice Error] {e.Message}");
             CompleteListening(false);
         }
+#else
+        // QUEST LOGIC (ANDROID)
+        Debug.Log("[Voice] Quest Mode: Press TRIGGER or 'A' Button to speak.");
+        isListening = true;
+        CancelInvoke(nameof(StopListeningTimeout));
+        Invoke(nameof(StopListeningTimeout), 5.0f);
+#endif
     }
 
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
     void OnPhraseRecognized(PhraseRecognizedEventArgs args)
     {
         if (!isListening) return;
-
-        Debug.Log($"[Voice] Heard: {args.text} (Confidence: {args.confidence})");
-
         if (args.confidence == ConfidenceLevel.Medium || args.confidence == ConfidenceLevel.High)
         {
             CompleteListening(true);
         }
     }
+#endif
 
     void StopListeningTimeout()
     {
         if (isListening)
         {
-            Debug.Log("[Voice] Timeout - No speech detected.");
+            Debug.Log("[Voice] Timeout - No input detected.");
             CompleteListening(false);
         }
     }
@@ -93,19 +132,18 @@ public class VoiceManager : MonoBehaviour
     {
         isListening = false;
         
-        // Stop logic
-        if (keywordRecognizer != null && keywordRecognizer.IsRunning)
-        {
-            keywordRecognizer.Stop();
-        }
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
+        if (keywordRecognizer != null && keywordRecognizer.IsRunning) keywordRecognizer.Stop();
+#endif
+        CancelInvoke(nameof(StopListeningTimeout));
 
         if (success)
         {
-            if(audioSource && listenSuccessClip) audioSource.PlayOneShot(listenSuccessClip);
+            if (audioSource && listenSuccessClip) audioSource.PlayOneShot(listenSuccessClip);
         }
         else
         {
-            if(audioSource && listenFailClip) audioSource.PlayOneShot(listenFailClip);
+            if (audioSource && listenFailClip) audioSource.PlayOneShot(listenFailClip);
         }
 
         currentCallback?.Invoke(success);
@@ -113,13 +151,6 @@ public class VoiceManager : MonoBehaviour
 
     private string CleanText(string raw)
     {
-        // Remove standard prefixes
-        string s = raw.Replace("sub_", "").Replace("verb_", "").Replace("obj_", "");
-        
-        // Also remove "Object" if your block is named "Object_Wallet" by mistake
-        s = s.Replace("Object_", ""); 
-        
-        s = s.Replace("_", " ");
-        return s.ToLower().Trim();
+        return raw.ToLower().Trim();
     }
 }
