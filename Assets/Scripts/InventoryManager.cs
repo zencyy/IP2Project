@@ -294,19 +294,19 @@ public class InventoryManager : MonoBehaviour
             // B. Collect (Safety: Check count ONLY if we haven't reached the barn yet)
             else if (objectCount < 5 && !reachedSVO) 
             { 
-                uiText = $"Collect Objects: {objectCount}/5"; 
+                uiText = $"Collect Objects:"; 
                 arrowTarget = null; 
             }
             // C. Go to Barn
             else if (!reachedSVO)
             { 
-                uiText = "Go to the white barn"; 
+                uiText = "Go to the Red Barn"; 
                 arrowTarget = svoStationTrig; 
             }
             // D. Form Sentences
             else 
             {
-                 uiText = $"Form SVO Sentences: {currentSVOSentenceCount}/5";
+                 uiText = $"Form SVO Sentences:";
                  arrowTarget = null;
             }
         }
@@ -321,7 +321,7 @@ public class InventoryManager : MonoBehaviour
             }
             else 
             {
-                 uiText = $"Form SV Sentences: {currentSVSentenceCount}/5";
+                 uiText = $"Form SV Sentences";
                  arrowTarget = null;
             }
         }
@@ -336,7 +336,7 @@ public class InventoryManager : MonoBehaviour
             }
             else if (subjectCount < 10) 
             { 
-                uiText = $"Collect Subjects: {subjectCount}/10"; 
+                uiText = $"Collect Subjects:"; 
                 arrowTarget = null; 
             }
             // Transition to Verbs
@@ -347,7 +347,7 @@ public class InventoryManager : MonoBehaviour
             }
             else if (verbCount < 10) 
             {
-                uiText = $"Collect Verbs: {verbCount}/10";
+                uiText = $"Collect Verbs:";
                 arrowTarget = null;
             }
         }
